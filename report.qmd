@@ -63,12 +63,6 @@ The table below provides the complete lung cancer mortality dataset, which can b
 ```{r}
 #| label: data-table
 
-georgia_mortality |>
-  filter(Site == "Lung & Bronchus") |>
-  DT::datatable(
-    rownames = FALSE,
-    options = list(pageLength = 15, scrollX = TRUE)
-  )
 ```
 
 ---
