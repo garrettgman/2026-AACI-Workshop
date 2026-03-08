@@ -1,0 +1,77 @@
+---
+title: "Lung Cancer Mortality in Georgia"
+subtitle: "Geographic Distribution and Data Overview (2021-2025)"
+format: 
+  html:
+    code-fold: true
+    code-tools: false
+execute:
+  echo: false
+  warning: false
+  message: false
+---
+
+## Overview
+
+This report examines lung cancer mortality patterns across Georgia counties between 2021 and 2025, using simulated data based on CDC mortality statistics.
+
+```{r}
+#| label: setup
+
+library(tidyverse)
+library(leaflet)
+library(DT)
+
+# Load datasets
+georgia_mortality <- read.csv("georgia_mortality.csv")
+georgia_population <- read.csv("georgia_population.csv")
+
+```
+
+## Geographic Distribution
+
+The map below shows lung cancer mortality rates per 100,000 population across Georgia counties. Darker colors indicate higher mortality rates.
+
+```{r}
+#| label: map
+#| fig-height: 6
+
+# Load mapping function
+source("create_mortality_map.R")
+
+create_mortality_map(filter(georgia_mortality, Site == "Lung & Bronchus"), georgia_population)
+```
+
+## Data Summary
+
+```{r}
+#| label: summary-stats
+
+total_deaths <- sum(filter(georgia_mortality, Site == "Lung & Bronchus")$n)
+avg_per_year <- total_deaths / 5
+counties_affected <- n_distinct(filter(georgia_mortality, Site == "Lung & Bronchus")$County)
+```
+
+- **Total lung cancer deaths (2021-2025):** `r format(total_deaths, big.mark = ",")`
+- **Average per year:** `r format(round(avg_per_year), big.mark = ",")`
+- **Counties with recorded deaths:** `r counties_affected`
+
+## Detailed Data Table
+
+The table below provides the complete lung cancer mortality dataset, which can be filtered and searched interactively.
+
+```{r}
+#| label: data-table
+
+georgia_mortality |>
+  filter(Site == "Lung & Bronchus") |>
+  select(-FIPS, -State) |>
+  datatable(
+    filter = "top",
+    options = list(pageLength = 10, scrollX = TRUE)
+  )
+```
+
+---
+
+*Data source: Simulated based on CDC mortality patterns*
