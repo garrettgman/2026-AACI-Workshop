@@ -1,0 +1,61 @@
+---
+title: "Lung Cancer Mortality in Georgia"
+subtitle: "Geographic Distribution and Data Overview (2021-2025)"
+format: 
+  dashboard:
+    orientation: columns
+execute:
+  echo: false
+  warning: false
+  message: false
+---
+
+```{r}
+#| label: setup
+
+library(tidyverse)
+library(leaflet)
+library(DT)
+
+# Load datasets
+georgia_mortality <- read.csv("georgia_mortality.csv")
+georgia_population <- read.csv("georgia_population.csv")
+
+```
+
+## Group 1
+
+```{r}
+#| label: map
+#| fig-height: 6
+
+# Load mapping function
+source("create_mortality_map.R")
+
+create_mortality_map(filter(georgia_mortality, Site == "Lung & Bronchus"), georgia_population)
+```
+
+## Group 2
+
+```{r}
+#| label: summary-stats
+
+total_deaths <- sum(filter(georgia_mortality, Site == "Lung & Bronchus")$n)
+avg_per_year <- total_deaths / 5
+counties_affected <- n_distinct(filter(georgia_mortality, Site == "Lung & Bronchus")$County)
+```
+
+- **Total lung cancer deaths (2021-2025):** `r format(total_deaths, big.mark = ",")`
+- **Average per year:** `r format(round(avg_per_year), big.mark = ",")`
+- **Counties with recorded deaths:** `r counties_affected`
+
+```{r}
+#| label: data-table
+
+georgia_mortality |>
+  filter(Site == "Lung & Bronchus") |>
+  select(-FIPS, -State) |>
+  datatable(
+    options = list(pageLength = 10, bPaginate = TRUE, dom = 'ltipr')
+  )
+```

@@ -67,7 +67,6 @@ georgia_mortality |>
   filter(Site == "Lung & Bronchus") |>
   select(-FIPS, -State) |>
   datatable(
-    filter = "top",
     options = list(pageLength = 10, scrollX = TRUE)
   )
 ```
