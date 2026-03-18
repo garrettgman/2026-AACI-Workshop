@@ -1,4 +1,4 @@
-# Build and share AI powered data science content
+# Use AI to build and share insights in cancer research
 
 This short workshop will show you how to build and share:
 
